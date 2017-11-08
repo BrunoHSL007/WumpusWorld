@@ -1,6 +1,6 @@
 //Wumpus World - Artificial Intelligence
 //Bruno Henrique dos Santos Laier
-//Version 0.5 24/10/2017
+//Version 0.7 08/11/2017
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
@@ -28,21 +28,25 @@ int NroBuracos=4;
 class Wumpus{
 	private:
 		
-		//int WumpusMap[Linha][Coluna]; //posições por onde o wumpus já passou e posição atual
-		int PosiLinhaW; // Linha em que o wumpus está
-		int PosiColW;   // Coluna em que o wumpus está
+		int WumpusMap[Linha][Coluna]; //posições por onde o wumpus já passou e posição atual
+		int PosiLinha; // Linha em que o wumpus está
+		int PosiCol;   // Coluna em que o wumpus está
 			
 	public:
 		Wumpus();
-		int getPosiLinhaW(); // Linha em que o wumpus está
-		int getPosiColW();   // Coluna em que o wumpus está
-		//void moveW();
+		int getPosiLinha(); // Linha em que o wumpus está
+		int getPosiCol();   // Coluna em que o wumpus está
+		int UP(int **Mapa);
+		int DOWN(int **Mapa);
+		int RIGHT(int **Mapa);
+		int LEFT(int **Mapa);
+		int move(int **Mapa);
+		void atualizaMatriz(int **Mapa);
 		//void attackW();
 		
 		
 };
 Wumpus::Wumpus(){
-	/*
 	for(int i=0; i<Linha;i++)
 	{
 		for(int j=0;j<Coluna;j++)
@@ -50,7 +54,6 @@ Wumpus::Wumpus(){
 			WumpusMap[i][j]=0;
 		}
 	}
-	*/
 	int Linerand,Colrand;
 	srand( (unsigned)time(NULL) );
 	int aux=rand();
@@ -61,17 +64,205 @@ Wumpus::Wumpus(){
 	};
 	aux=rand();
 	Colrand = (aux % static_cast<int>(Coluna));
-	//WumpusMap[Linerand][Colrand]=wumpus;
-	PosiLinhaW=Linerand;
-	PosiColW=Colrand;
+	WumpusMap[Linerand][Colrand]=wumpus;
+	PosiLinha=Linerand;
+	PosiCol=Colrand;
 	
 	
 }
-int Wumpus::getPosiLinhaW(){
-	return PosiLinhaW;
+int Wumpus::getPosiLinha(){
+	return PosiLinha;
 }
-int Wumpus::getPosiColW(){
-	return PosiColW;
+int Wumpus::getPosiCol(){
+	return PosiCol;
+}
+
+int Wumpus::UP(int **Mapa){
+	if(PosiLinha!=0)
+	{
+		if((WumpusMap[PosiLinha-1][PosiCol]!=PosVisitada)&&(Mapa[PosiLinha-1][PosiCol]!=buraco)&&(Mapa[PosiLinha-1][PosiCol]!=ouro))
+		{
+			if(WumpusMap[PosiLinha-1][PosiCol]!=-2)
+			{
+				WumpusMap[PosiLinha-1][PosiCol]=player;
+				WumpusMap[PosiLinha][PosiCol]=PosVisitada;
+				PosiLinha--;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+int Wumpus::DOWN(int **Mapa){
+	if(PosiLinha!=Linha-1)
+	{
+		if((WumpusMap[PosiLinha+1][PosiCol]!=PosVisitada)&&(Mapa[PosiLinha+1][PosiCol]!=buraco)&&(Mapa[PosiLinha+1][PosiCol]!=ouro))
+		{
+			if(WumpusMap[PosiLinha+1][PosiCol]!=-2)
+			{
+				WumpusMap[PosiLinha+1][PosiCol]=player;
+				WumpusMap[PosiLinha][PosiCol]=PosVisitada;
+				PosiLinha++;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+int Wumpus::RIGHT(int **Mapa){
+	if(PosiCol!=Coluna-1)
+	{
+		if((WumpusMap[PosiLinha][PosiCol+1]!=PosVisitada)&&(Mapa[PosiLinha][PosiCol+1]!=buraco)&&(Mapa[PosiLinha][PosiCol+1]!=ouro))
+		{
+			if(WumpusMap[PosiLinha][PosiCol+1]!=-2)
+			{
+				WumpusMap[PosiLinha][PosiCol+1]=player;
+				WumpusMap[PosiLinha][PosiCol]=PosVisitada;
+				PosiCol++;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+int Wumpus::LEFT(int **Mapa){
+	if(PosiCol!=0)
+	{
+		if((WumpusMap[PosiLinha][PosiCol-1]!=PosVisitada)&&(Mapa[PosiLinha][PosiCol-1]!=buraco)&&(Mapa[PosiLinha][PosiCol-1]!=ouro))
+		{
+			if(WumpusMap[PosiLinha][PosiCol-1]!=-2)
+			{
+				WumpusMap[PosiLinha][PosiCol-1]=player;
+				WumpusMap[PosiLinha][PosiCol]=PosVisitada;
+				PosiCol--;
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+int Wumpus::move(int **Mapa){
+	//int aux;
+	for(int i=0;i<Linha;i++)
+	{
+		for(int j=0;j<Coluna;j++)
+		{
+			if(WumpusMap[i][j]<0)
+				cout << -WumpusMap[i][j] << " ";
+			else
+				cout << WumpusMap[i][j] << " ";
+		}
+		cout << endl;
+	}
+	if(RIGHT(Mapa)){
+		atualizaMatriz(Mapa);
+		return 1;
+	}
+	else if(LEFT(Mapa)){
+		atualizaMatriz(Mapa);
+		return 1;
+	}
+	else if(DOWN(Mapa)){
+		atualizaMatriz(Mapa);
+		return 1;
+	}
+	else if(UP(Mapa)){
+		atualizaMatriz(Mapa);
+		return 1;
+	}
+	else{
+		if(WumpusMap[((PosiLinha-1)>=0)?PosiLinha-1:PosiLinha][PosiCol]==PosVisitada)
+		{
+			WumpusMap[PosiLinha-1][PosiCol]=wumpus;
+			WumpusMap[PosiLinha][PosiCol]=-2;
+			PosiLinha--;
+			atualizaMatriz(Mapa);
+		}
+		else if(WumpusMap[((PosiLinha+1)<Linha)?PosiLinha+1:PosiLinha][PosiCol]==PosVisitada)
+		{
+			WumpusMap[PosiLinha+1][PosiCol]=wumpus;
+			WumpusMap[PosiLinha][PosiCol]=-2;
+			PosiLinha++;
+			atualizaMatriz(Mapa);
+		}
+		else if(WumpusMap[PosiLinha][((PosiCol+1)<Coluna)?PosiCol-1:PosiCol]==PosVisitada)
+		{
+			WumpusMap[PosiLinha][PosiCol-1]=wumpus;
+			WumpusMap[PosiLinha][PosiCol]=-2;
+			PosiCol--;
+			atualizaMatriz(Mapa);
+		}
+		else if(WumpusMap[PosiLinha][((PosiCol+1)<Coluna)?PosiCol+1:PosiCol]==PosVisitada)
+		{
+			WumpusMap[PosiLinha][PosiCol+1]=wumpus;
+			WumpusMap[PosiLinha][PosiCol]=-2;
+			PosiCol++;
+			atualizaMatriz(Mapa);
+		}
+		
+		
+		
+		
+	}
+	return 1;
+}
+void Wumpus::atualizaMatriz(int **Mapa)
+{
+	for(int i=0;i< Linha ;i++)
+	{
+		for(int j=0;j<Coluna;j++)
+		{
+			if((Mapa[i][j]==wumpus)||(Mapa[i][j]==fedor))
+			{
+				Mapa[i][j]=0;
+			}
+		}
+	}
+	for(int i=0;i<Linha;i++)
+	{
+		for(int j=0;j<Coluna;j++)
+		{
+			if(Mapa[i][j]==ouro)
+			{
+				if(i-1>=0)
+					Mapa[i-1][j]=brilho;
+				if(i+1<Linha)	
+					Mapa[i+1][j]=brilho;
+				if(j-1>=0)					
+					Mapa[i][j-1]=brilho;
+				if(j+1<Coluna)					
+					Mapa[i][j+1]=brilho;
+			}
+			if(Mapa[i][j]==buraco)
+			{
+				if(i-1>=0)
+					Mapa[i-1][j]=brisa;
+				if(i+1<Linha)	
+					Mapa[i+1][j]=brisa;
+				if(j-1>=0)					
+					Mapa[i][j-1]=brisa;
+				if(j+1<Coluna)					
+					Mapa[i][j+1]=brisa;
+			}
+		}
+	}
+	int auxLinha = getPosiLinha();
+	int auxColuna = getPosiCol();
+	cout << "linha = " << auxLinha << "\ncoluna = " << auxColuna << endl;
+	Mapa[auxLinha][auxColuna]=wumpus;
+	if(auxLinha-1>=0)
+		if((Mapa[auxLinha-1][auxColuna]!=buraco)&&(Mapa[auxLinha-1][auxColuna]!=ouro))
+			Mapa[auxLinha-1][auxColuna]=fedor;
+	if(auxLinha+1<Linha)	
+		if((Mapa[auxLinha+1][auxColuna]!=buraco)&&(Mapa[auxLinha+1][auxColuna]!=ouro))
+			Mapa[auxLinha+1][auxColuna]=fedor;
+	if(auxColuna-1>=0)
+		if((Mapa[auxLinha][auxColuna-1]!=buraco)&&(Mapa[auxLinha][auxColuna-1]!=ouro))
+			Mapa[auxLinha][auxColuna-1]=fedor;
+	if(auxColuna+1<Coluna)
+		if((Mapa[auxLinha][auxColuna+1]!=buraco)&&(Mapa[auxLinha][auxColuna+1]!=ouro))
+			Mapa[auxLinha][auxColuna+1]=fedor;
 }
 ////////////////////////////////////////////////////////////////////////
 class Player{
@@ -249,23 +440,17 @@ int Player::moveIA(int **Mapa){
 		return 1;
 	}
 	else{
-		if(PlayerMap[PosiLinha+1][PosiCol]==PosVisitada)
-		{
-			PlayerMap[PosiLinha+1][PosiCol]=player;
-			PlayerMap[PosiLinha][PosiCol]=-2;
-			PosiLinha++;
-		}
-		else if(PlayerMap[PosiLinha][PosiCol+1]==PosVisitada)
+		if(PlayerMap[PosiLinha][PosiCol+1]==PosVisitada)
 		{
 			PlayerMap[PosiLinha][PosiCol+1]=player;
 			PlayerMap[PosiLinha][PosiCol]=-2;
 			PosiCol++;
 		}
-		else if(PlayerMap[PosiLinha-1][PosiCol]==PosVisitada)
+		else if(PlayerMap[PosiLinha+1][PosiCol]==PosVisitada)
 		{
-			PlayerMap[PosiLinha-1][PosiCol]=player;
+			PlayerMap[PosiLinha+1][PosiCol]=player;
 			PlayerMap[PosiLinha][PosiCol]=-2;
-			PosiLinha--;
+			PosiLinha++;
 		}
 		else if(PlayerMap[PosiLinha][PosiCol-1]==PosVisitada)
 		{
@@ -273,6 +458,14 @@ int Player::moveIA(int **Mapa){
 			PlayerMap[PosiLinha][PosiCol]=-2;
 			PosiCol--;
 		}
+		else if(PlayerMap[PosiLinha-1][PosiCol]==PosVisitada)
+		{
+			PlayerMap[PosiLinha-1][PosiCol]=player;
+			PlayerMap[PosiLinha][PosiCol]=-2;
+			PosiLinha--;
+		}
+		
+		
 		
 		
 	}
@@ -314,7 +507,7 @@ void printMapa(int** Mapa,Player P1)
 		
 		switch(i)
 		{
-			case 1 : cout << "1 - Player 1";break;
+			case 1 : cout << "█ - Player 1";break;
 			case 2 : cout << "2 - Ouro";break;
 			case 3 : cout << "3 - Brilho";break;
 			case 4 : cout << "4 - Wumpus";break;
@@ -357,8 +550,8 @@ int **inicializaMatriz(int** Mapa, Wumpus W){
 	}
 	
 	//Colocando o Wumpus no mapa
-	int auxLinha = W.getPosiLinhaW();
-	int auxColuna = W.getPosiColW();
+	int auxLinha = W.getPosiLinha();
+	int auxColuna = W.getPosiCol();
 	Mapa[auxLinha][auxColuna]=wumpus;
 	if(auxLinha-1>=0)
 		Mapa[auxLinha-1][auxColuna]=fedor;
@@ -438,6 +631,7 @@ int verificaPosicaoAtual(int **Mapa,Player P1){
 	}
 	return 0;
 }
+
 ////////////////////////////////////////////////////////////////////////
 int main()
 {
@@ -499,12 +693,21 @@ int main()
 	if(IAGameMode==false)
 	{
 		int status=0;
-		char C;
+		//bool vezP1=true;
+		bool vez=false;
 		do
 		{
-			C=getchar();
-			P1.moveP1(Mapa, C);
-			//atualizaMatriz(Mapa,P1);
+			char C;
+			if(vez==false){
+				cin >> C;
+				P1.moveP1(Mapa, C);
+				vez=true;
+			}
+			else if(vez==true){
+				W.move(Mapa);
+				vez=false;
+			}
+			//atualizaMatriz(Mapa,W);
 			printf("\e[H\e[2J");
 			printMapa(Mapa,P1);
 			
@@ -554,12 +757,22 @@ int main()
 	}
 	else{
 		int aux=1;
+		bool vez=false;
 		printf("\e[H\e[2J");
 		printMapa(Mapa,P1);
 		getchar();
+		
 		do
 		{
-			aux=P1.moveIA(Mapa);
+			if(vez==false){
+				aux=P1.moveIA(Mapa);
+				vez=true;
+			}
+			else if(vez==true){
+				W.move(Mapa);
+				vez=false;
+			}
+			
 			printf("\e[H\e[2J");
 			printMapa(Mapa,P1);
 			if(aux==2)
