@@ -1,6 +1,6 @@
 //Wumpus World - Artificial Intelligence
 //Bruno Henrique dos Santos Laier
-//Version 1.0 09/11/2017
+//Version 1.0 17/11/2017
 //Problem: Wumpus nunca mata o player 1 no modo Player
 #include <iostream>
 #include <cstdio>
@@ -10,8 +10,8 @@ using namespace std;
 
 bool IAGameMode=true;//IAGameMode true = player is IA false = normal player
 
-const int Linha=20; //valor maior igual que 10
-const int Coluna=20; //valor maior igual que 10
+const int Linha=10; //valor maior igual que 10
+const int Coluna=10; //valor maior igual que 10
 
 const int player=1;
 const int ouro=2;
@@ -24,6 +24,8 @@ const int saida=10;
 const int PosVisitada=-1;
 
 int NroBuracos=4;
+
+int pontuacao=0;
 
 
 class Wumpus{
@@ -566,6 +568,7 @@ int Player::LEFT(int **Mapa){
 
 
 int Player::moveIA(int **Mapa){
+	pontuacao--;
 	if((Mapa[PosiLinha][PosiCol]==fedor)&&(temFlecha==true))
 	{
 		
@@ -1079,9 +1082,13 @@ int main()
 			printf("\e[H\e[2J");
 			printMapa(Mapa,P1);
 			if(WDead==true)
-					cout << "\nVocê matou o Wumpus!"<<endl;
+			{
+				
+				cout << "\nVocê matou o Wumpus!"<<endl;
+			}
 			if(aux==3)
 			{
+				pontuacao+=1000;
 				W.setisDead(true);
 				//W.atualizaMatriz(Mapa);
 				printf("\e[H\e[2J");
@@ -1095,7 +1102,8 @@ int main()
 				printMapa(Mapa,P1);
 				if(WDead==true)
 						cout << "\nVocê matou o Wumpus!"<<endl;
-				cout << "\nParabéns! Você encontrou o ouro e saiu da caverna!";
+				pontuacao+=1000;
+				cout << "\nParabéns! Você encontrou o ouro!";
 			}
 			if(aux==0)
 			{
@@ -1104,6 +1112,7 @@ int main()
 			if(Mapa[P1.getPosiLinha()][P1.getPosiCol()]==wumpus)
 			{
 				cout<<"\nVocê foi morto pelo Wumpus!"<<endl;
+				pontuacao-=1000;
 				aux=0;
 			}
 			getchar();
@@ -1111,5 +1120,6 @@ int main()
 		while((aux==1) || (aux==3));
 		
 	}
+	cout << "Pontuação = "<< pontuacao;
 	return 0;
 }
