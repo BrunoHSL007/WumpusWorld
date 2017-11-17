@@ -1,6 +1,6 @@
 //Wumpus World - Artificial Intelligence
 //Bruno Henrique dos Santos Laier
-//Version 0.9 09/11/2017
+//Version 1.0 09/11/2017
 //Problem: Wumpus nunca mata o player 1 no modo Player
 #include <iostream>
 #include <cstdio>
@@ -10,8 +10,8 @@ using namespace std;
 
 bool IAGameMode=true;//IAGameMode true = player is IA false = normal player
 
-const int Linha=10;
-const int Coluna=10;
+const int Linha=20; //valor maior igual que 10
+const int Coluna=20; //valor maior igual que 10
 
 const int player=1;
 const int ouro=2;
@@ -727,14 +727,32 @@ void printMapa(int** Mapa,Player P1)
 		}
 	}
 	MapAux[auxLinha][auxColuna] = player;
-	cout << "┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐";
+	cout << "┌";
+	for(int i=0;i<Coluna;i++)
+	{
+		if(i!=0)
+			cout << "┬───";
+		else
+			cout << "───";
+	}
+	cout << "┐";
 	for(int i=0;i<Linha;i++)
 	{
 		
 		if(flag==false)
 			flag=true;
 		else
-			cout << "├───┼───┼───┼───┼───┼───┼───┼───┼───┼───┤     ";
+		{
+			cout << "├";
+			for(int i=0;i<Coluna;i++)
+			{
+				if(i!=0)
+					cout << "┼───";
+				else
+					cout << "───";
+			}
+			cout << "┤     ";
+		}
 		
 		
 		switch(i)
@@ -769,7 +787,15 @@ void printMapa(int** Mapa,Player P1)
 		}
 		cout << endl;
 	}
-	cout << "└───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘     Pressione Enter para continuar" << endl;
+	cout << "└";
+	for(int i=0;i<Coluna;i++)
+	{
+		if(i!=0)
+			cout << "┴───";
+		else
+			cout << "───";
+	}
+	cout << "┘     Pressione Enter para continuar" << endl;
 	
 }
 ////////////////////////////////////////////////////////////////////////
@@ -969,23 +995,23 @@ int main()
 			printf("\e[H\e[2J");
 			printMapa(Mapa,P1);
 			if(WDead==true)
-					cout << "Você matou o Wumpus!"<<endl;
+					cout << "\nVocê matou o Wumpus!"<<endl;
 			if(status==4)
 			{
 				W.setisDead(true);
 				W.atualizaMatriz(Mapa);
 				printf("\e[H\e[2J");
 				printMapa(Mapa,P1);
-				cout << "Você matou o Wumpus!"<<endl;
+				cout << "\nVocê matou o Wumpus!"<<endl;
 				WDead=true;
 			}
 			if(status==2)
 			{
-				cout << "Parabéns! Você encontrou o ouro e saiu da caverna!"<<endl;
+				cout << "\nParabéns! Você encontrou o ouro e saiu da caverna!"<<endl;
 			}
 			if(status==1)
 			{
-				cout<< "Ouro encontrado, ache a saída"<<endl;
+				cout<< "\nOuro encontrado, ache a saída"<<endl;
 				for(int i=0;i<Linha;i++)
 				{
 					for(int j=0;j<Coluna;j++)
@@ -1013,11 +1039,11 @@ int main()
 		while((status<2)||(status==4));
 		if(status==3)
 		{
-			cout<<"Você caiu em um buraco!"<<endl;
+			cout<<"\nVocê caiu em um buraco!"<<endl;
 		}
 		else if(status==2)
 		{
-			cout<<"Você foi morto pelo Wumpus!"<<endl;
+			cout<<"\nVocê foi morto pelo Wumpus!"<<endl;
 		}
 		else if(status==5)
 		{
@@ -1025,7 +1051,7 @@ int main()
 			printMapa(Mapa,P1);
 			if(WDead==true)
 					cout << "Você matou o Wumpus!"<<endl;
-			cout << "Parabéns! Você encontrou o ouro e saiu da caverna!";
+			cout << "\nParabéns! Você encontrou o ouro e saiu da caverna!";
 		}
 		//int **Mapa;
 		//Mapa=alocaMatriz(Linha,Coluna);
@@ -1053,14 +1079,14 @@ int main()
 			printf("\e[H\e[2J");
 			printMapa(Mapa,P1);
 			if(WDead==true)
-					cout << "Você matou o Wumpus!"<<endl;
+					cout << "\nVocê matou o Wumpus!"<<endl;
 			if(aux==3)
 			{
 				W.setisDead(true);
 				//W.atualizaMatriz(Mapa);
 				printf("\e[H\e[2J");
 				printMapa(Mapa,P1);
-				cout << "Você matou o Wumpus!"<<endl;
+				cout << "\nVocê matou o Wumpus!"<<endl;
 				WDead=true;
 			}
 			if(aux==2)
@@ -1068,16 +1094,16 @@ int main()
 				printf("\e[H\e[2J");
 				printMapa(Mapa,P1);
 				if(WDead==true)
-						cout << "Você matou o Wumpus!"<<endl;
-				cout << "Parabéns! Você encontrou o ouro e saiu da caverna!";
+						cout << "\nVocê matou o Wumpus!"<<endl;
+				cout << "\nParabéns! Você encontrou o ouro e saiu da caverna!";
 			}
 			if(aux==0)
 			{
-				cout << "Ouro não encontrado!"<<endl;
+				cout << "\nOuro não encontrado!"<<endl;
 			}
 			if(Mapa[P1.getPosiLinha()][P1.getPosiCol()]==wumpus)
 			{
-				cout<<"Você foi morto pelo Wumpus!"<<endl;
+				cout<<"\nVocê foi morto pelo Wumpus!"<<endl;
 				aux=0;
 			}
 			getchar();
